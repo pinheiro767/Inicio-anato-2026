@@ -3,161 +3,18 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Corpo em Variação — Monta &amp; Aprende</title>
+  <title>Anatomia Humana — Master Class</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&amp;family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { font-family: 'Quicksand', sans-serif; }
     .title-font { font-family: 'Fredoka', sans-serif; }
-    
-    .draggable {
-      cursor: grab;
-      user-select: none;
-      touch-action: none;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-    .draggable:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.3);
-    }
-    .draggable.dragging {
-      cursor: grabbing;
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(34, 197, 94, 0.8);
-      z-index: 1000;
-      opacity: 0.95;
-    }
-    
-    .slot {
-      transition: all 0.2s ease;
-      border: 3px solid #00ff00;
-      background: linear-gradient(135deg, #0a1929 0%, #132f4c 100%);
-      box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.1);
-    }
-    .slot.highlight {
-      border-color: #00ff00;
-      background: linear-gradient(135deg, #0f2927 0%, #1a5f4a 100%);
-      transform: scale(1.02);
-      box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.3), 0 0 30px rgba(0, 255, 0, 0.4);
-    }
-    .slot.correct {
-      border-color: #00ff00;
-      border-style: solid;
-      background: linear-gradient(135deg, #0a2e0a 0%, #1a5a1a 100%);
-      box-shadow: inset 0 0 15px rgba(0, 255, 0, 0.4), 0 0 20px rgba(0, 255, 0, 0.5);
-    }
-    .slot.incorrect {
-      border-color: #ff0000;
-      border-style: solid;
-      animation: shake 0.4s ease;
-      box-shadow: inset 0 0 15px rgba(255, 0, 0, 0.3), 0 0 20px rgba(255, 0, 0, 0.4);
-    }
-    .slot.locked {
-      border-color: #00ff00;
-      border-style: solid;
-      background: linear-gradient(135deg, #0a3a0a 0%, #1a7a1a 100%);
-      box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.5), 0 0 25px rgba(0, 255, 0, 0.6);
-    }
-    
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-8px); }
-      40%, 80% { transform: translateX(8px); }
-    }
-    
-    @keyframes scan-line {
-      0% { top: -100%; }
-      100% { top: 100%; }
-    }
-    
-    @keyframes spotlight-red {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 0.7; }
-    }
-    
-    @keyframes spotlight-green {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 0.8; }
-    }
-    
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.4); }
-      50% { box-shadow: 0 0 0 10px rgba(0, 255, 0, 0); }
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
-    }
-    
-    @keyframes coin-spin {
-      0% { transform: rotateY(0deg); }
-      100% { transform: rotateY(360deg); }
-    }
-    
-    @keyframes coin-explode {
-      0% {
-        opacity: 1;
-        transform: translate(0, 0) scale(1);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(var(--tx), var(--ty)) scale(0);
-      }
-    }
-    
-    .animate-float {
-      animation: float 3s ease-in-out infinite;
-    }
-    
-    .progress-bar {
-      background: linear-gradient(90deg, #00ff00 0%, #00dd00 100%);
-      transition: width 0.3s ease;
-      box-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
-    }
-    
-    .timer-warning {
-      animation: pulse-glow 1s ease infinite;
-    }
-    
-    .card-shadow {
-      box-shadow: 0 0 20px rgba(0, 255, 0, 0.3), 0 0 40px rgba(0, 255, 0, 0.1);
-    }
     
     .game-bg {
       background: #0a0e27;
       position: relative;
       overflow: hidden;
-    }
-    
-    .game-bg::before {
-      content: '';
-      position: fixed;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: 
-        radial-gradient(circle at 30% 50%, rgba(255, 0, 0, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 70% 50%, rgba(0, 255, 0, 0.1) 0%, transparent 50%);
-      pointer-events: none;
-      animation: spotlight-red 4s ease-in-out infinite;
-      z-index: 0;
-    }
-    
-    .game-bg::after {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(180deg, transparent 0%, rgba(0, 255, 0, 0.02) 50%, transparent 100%);
-      pointer-events: none;
-      animation: scan-line 8s linear infinite;
-      z-index: 0;
+      min-height: 100vh;
     }
     
     .glass-panel {
@@ -165,885 +22,339 @@
       backdrop-filter: blur(10px);
       border: 2px solid rgba(0, 255, 0, 0.3);
       box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.1), 0 0 30px rgba(0, 255, 0, 0.2);
-      color: #1a1a1a;
+      color: white;
       position: relative;
       z-index: 1;
     }
+
+    .draggable {
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      transition: all 0.2s ease;
+    }
+    .draggable:hover { transform: translateY(-2px); border-color: #00ff00; }
+    .draggable.dragging { opacity: 0.5; cursor: grabbing; }
     
+    .slot {
+      transition: all 0.3s ease;
+      border: 2px dashed rgba(0, 255, 0, 0.3);
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .slot.highlight { border-color: #00ff00; background: rgba(0, 255, 0, 0.1); }
+    .slot.correct { border: 2px solid #00ff00; background: rgba(0, 255, 0, 0.05); }
+    .slot.incorrect { border: 2px solid #ff0000; animation: shake 0.4s ease; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
     .coin {
       position: fixed;
-      width: 30px;
-      height: 30px;
-      background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
-      border-radius: 50%;
-      box-shadow: inset -2px -2px 5px rgba(0,0,0,0.3), 0 0 10px rgba(255, 215, 0, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      font-weight: bold;
-      animation: coin-spin 0.6s ease-in, coin-explode 1s ease-out forwards;
-      animation-delay: 0s;
+      pointer-events: none;
+      animation: explode 0.8s ease-out forwards;
+      z-index: 1000;
     }
-    
-    .coin::before {
-      content: '🪙';
-      position: absolute;
+    @keyframes explode {
+      0% { transform: translate(0, 0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
     }
   </style>
-  <style>body { box-sizing: border-box; }</style>
  </head>
- <body class="h-full overflow-auto game-bg">
-  <div id="app" class="h-full w-full flex flex-col"><!-- Start Screen -->
-   <div id="start-screen" class="h-full flex items-center justify-center p-4">
-    <div class="glass-panel rounded-3xl p-8 max-w-lg w-full text-center card-shadow">
-     <div class="text-6xl mb-4 animate-float">
-      🧬
-     </div>
-     <h1 id="main-title" class="title-font text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">Corpo em Variação</h1>
-     <p id="main-subtitle" class="text-gray-600 text-lg mb-8">Monta &amp; Aprende (Drag &amp; Drop)</p>
-     <div class="mb-6"><label class="block text-left text-sm font-medium text-gray-700 mb-2">Seu Nome:</label> <input type="text" id="player-name" placeholder="Digite seu nome..." class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition text-lg">
-     </div><button id="start-btn" class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold text-lg hover:opacity-90 transition transform hover:scale-[1.02] active:scale-[0.98]"> 🎮 Começar Jogo </button>
-     <div class="mt-6 pt-6 border-t border-gray-200">
-      <h3 class="font-semibold text-gray-800 mb-3">🏆 Top Pontuações</h3>
-      <div id="leaderboard-preview" class="text-sm text-gray-600 space-y-1">
-       <p class="text-gray-400 italic">Nenhuma pontuação ainda</p>
-      </div>
-     </div>
+ <body class="game-bg">
+  <div id="app" class="h-full w-full flex flex-col">
+   
+   <div id="start-screen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="glass-panel rounded-3xl p-8 max-w-lg w-full text-center">
+     <div class="text-6xl mb-4">🩺</div>
+     <h1 class="title-font text-4xl font-bold text-green-400 mb-2">Anatomia Interativa</h1>
+     <p class="text-gray-300 mb-8">Introdução, Divisão e Terminologia</p>
+     <input type="text" id="player-name" placeholder="Digite seu nome..." class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-green-500 text-white mb-6 focus:outline-none">
+     <button id="start-btn" class="w-full py-4 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold transition"> INICIAR DESAFIO </button>
     </div>
-   </div><!-- Game Screen -->
-   <div id="game-screen" class="h-full hidden flex flex-col"><!-- Top Bar -->
-    <div class="glass-panel px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
-     <div class="flex items-center gap-4">
-      <div class="flex items-center gap-2"><span class="text-2xl">🎯</span>
-       <div>
-        <p class="text-xs text-gray-500">Nível</p>
-        <p id="level-display" class="font-bold text-purple-600">1 / 5</p>
+   </div>
+
+   <div id="game-screen" class="h-screen hidden flex flex-col">
+    <div class="glass-panel px-6 py-4 flex items-center justify-between">
+     <div class="flex gap-6">
+       <div><p class="text-xs text-gray-400">FASE</p><p id="level-display" class="font-bold text-green-400">1/7</p></div>
+       <div><p class="text-xs text-gray-400">PONTOS</p><p id="score-display" class="font-bold text-amber-500">0</p></div>
+     </div>
+     <div class="flex-1 max-w-xs mx-4">
+       <div id="timer-display" class="text-center text-xs mb-1">4:00</div>
+       <div class="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+         <div id="timer-bar" class="bg-green-500 h-full transition-all" style="width: 100%"></div>
        </div>
-      </div>
-      <div class="flex items-center gap-2"><span class="text-2xl">⭐</span>
-       <div>
-        <p class="text-xs text-gray-500">Pontos</p>
-        <p id="score-display" class="font-bold text-amber-600">0</p>
-       </div>
-      </div>
      </div>
-     <div class="flex-1 max-w-md">
-      <div class="flex items-center gap-2 mb-1"><span class="text-lg">⏱️</span> <span id="timer-display" class="font-mono font-bold text-gray-700">4:00</span>
-      </div>
-      <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
-       <div id="timer-bar" class="progress-bar h-full rounded-full" style="width: 100%"></div>
-      </div>
-     </div><button id="check-btn" class="px-6 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold hover:opacity-90 transition flex items-center gap-2"> ✅ Verificar </button>
-    </div><!-- Main Game Area -->
-    <div class="flex-1 flex overflow-hidden p-4 gap-4"><!-- Left Panel - Draggable Items -->
-     <div class="w-80 flex-shrink-0 glass-panel rounded-2xl p-4 overflow-y-auto">
-      <h2 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><span class="text-xl">📦</span> Arraste as opções</h2>
-      <div id="items-container" class="space-y-2"><!-- Draggable items will be inserted here -->
-      </div>
-     </div><!-- Right Panel - Drop Slots -->
-     <div class="flex-1 glass-panel rounded-2xl p-4 overflow-y-auto">
-      <h2 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><span class="text-xl">🎯</span> <span id="level-title">Encaixe nos espaços corretos</span></h2>
-      <div id="slots-container" class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));"><!-- Slots will be inserted here -->
-      </div>
-     </div>
-    </div><!-- Bottom Bar - Feedback -->
-    <div id="feedback-bar" class="glass-panel px-4 py-3 text-center">
-     <p id="feedback-text" class="text-gray-600">Arraste os itens para os espaços correspondentes</p>
+     <button id="check-btn" class="px-6 py-2 bg-green-600 rounded-lg font-bold hover:bg-green-500"> VERIFICAR </button>
     </div>
-   </div><!-- End Screen -->
-   <div id="end-screen" class="h-full hidden flex items-center justify-center p-4">
-    <div class="glass-panel rounded-3xl p-8 max-w-lg w-full text-center card-shadow">
-     <div class="text-6xl mb-4">
-      🎉
+
+    <div class="flex-1 flex overflow-hidden p-4 gap-4">
+     <div class="w-1/3 glass-panel rounded-2xl p-4 overflow-y-auto">
+      <h3 class="text-sm font-bold text-gray-400 mb-4 uppercase">Arraste as Respostas:</h3>
+      <div id="items-container" class="space-y-3"></div>
      </div>
-     <h2 class="title-font text-3xl font-bold text-gray-800 mb-2">Jogo Finalizado!</h2>
-     <p id="final-message" class="text-gray-600 mb-6">Parabéns pela sua participação!</p>
-     <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl p-6 mb-6">
-      <p class="text-sm text-gray-500 mb-1">Pontuação Final</p>
-      <p id="final-score" class="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">0</p>
-      <p id="final-level" class="text-gray-600 mt-2">Nível alcançado: 1</p>
-     </div>
-     <div class="space-y-3"><button id="play-again-btn" class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold text-lg hover:opacity-90 transition"> 🔄 Jogar Novamente </button> <button id="view-ranking-btn" class="w-full py-3 bg-white border-2 border-purple-200 text-purple-600 rounded-xl font-semibold hover:bg-purple-50 transition"> 🏆 Ver Ranking </button>
-     </div>
-    </div>
-   </div><!-- Ranking Modal -->
-   <div id="ranking-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50">
-    <div class="glass-panel rounded-3xl p-6 max-w-md w-full card-shadow max-h-[80%] overflow-y-auto">
-     <div class="flex items-center justify-between mb-4">
-      <h2 class="title-font text-2xl font-bold text-gray-800 flex items-center gap-2"><span>🏆</span> Ranking</h2><button id="close-ranking-btn" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition"> ✕ </button>
-     </div>
-     <div id="ranking-list" class="space-y-2">
-      <p class="text-gray-400 text-center py-4">Carregando...</p>
+     <div class="w-2/3 glass-panel rounded-2xl p-4 overflow-y-auto">
+      <h3 id="level-title" class="text-xl font-bold text-green-400 mb-1">Título</h3>
+      <p id="level-desc" class="text-sm text-gray-400 mb-6">Descrição</p>
+      <div id="slots-container" class="grid grid-cols-1 gap-4"></div>
      </div>
     </div>
    </div>
-  </div>
-  <script>
-    // ==================== CONFIG ====================
-    const TIME_PER_LEVEL = 240;
-    const BONUS_PER_LEVEL_CLEAR = 250;
-    const PENALTY_WRONG_CHECK = 5;
-    const POINTS_PER_CORRECT = 50;
-    const POINTS_LOCK_BONUS = 10;
 
-    // ==================== GAME DATA ====================
+   <div id="end-screen" class="min-h-screen hidden flex items-center justify-center p-4">
+    <div class="glass-panel rounded-3xl p-10 text-center max-w-md">
+     <h2 class="text-3xl font-bold text-green-400 mb-4">Missão Cumprida!</h2>
+     <p class="mb-6">Você demonstrou excelente conhecimento anatômico.</p>
+     <div class="text-5xl font-bold text-white mb-8" id="final-score">0</div>
+     <button onclick="location.reload()" class="px-8 py-3 bg-green-600 rounded-xl font-bold">JOGAR NOVAMENTE</button>
+    </div>
+   </div>
+  </div>
+
+  <script>
+    // Efeitos sonoros
+    const audio = {
+      play(freq, type = 'sine', duration = 0.1, volume = 0.1) {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(volume, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      }
+    };
+
     const LEVELS = [
       {
-        title: "Fase 1 — Conceitos: arraste a definição correta",
-        description: "Conceitos fundamentais sobre variação corporal",
-        timeLimit: 240,
+        title: "Fase 1: Conceitos Iniciais",
+        desc: "Diferencie os tipos de variações morfológicas.",
         items: [
-          { id: "def_variacao", text: "Diferenças no corpo sem atrapalhar o funcionamento." },
-          { id: "def_anomalia", text: "Diferença no corpo que atrapalha o funcionamento." },
-          { id: "def_monstruosidade", text: "Anomalia muito acentuada; geralmente incompatível com a vida." }
+          { id: "v1", text: "Diferença que não atrapalha a função." },
+          { id: "v2", text: "Alteração que traz prejuízo funcional." },
+          { id: "v3", text: "Anomalia grave incompatível com a vida." }
         ],
         slots: [
-          { title: "Variação anatômica (normal)\n(diferença sem prejuízo funcional)", correctId: "def_variacao" },
-          { title: "Anomalia\n(variação com prejuízo funcional)", correctId: "def_anomalia" },
-          { title: "Monstruosidade\n(anomalia muito acentuada)", correctId: "def_monstruosidade" }
+          { label: "Variação Anatômica", correct: "v1" },
+          { label: "Anomalia", correct: "v2" },
+          { label: "Monstruosidade", correct: "v3" }
         ]
       },
       {
-        title: "Fase 2 — Biótipos: encaixe a descrição",
-        description: "Identifique os três biótipos humanos",
-        timeLimit: 240,
+        title: "Fase 2: Divisão do Corpo (I)",
+        desc: "Identifique as partes principais e pescoço.",
         items: [
-          { id: "bio_longi", text: "Alto e magro; membros parecem mais longos." },
-          { id: "bio_normi", text: "Proporções intermediárias; aspecto atlético." },
-          { id: "bio_brevi", text: "Mais baixo e forte; tronco parece mais robusto." }
+          { id: "d1", text: "Dividida em Crânio e Face." },
+          { id: "d2", text: "Conexão entre a cabeça e o tronco." },
+          { id: "d3", text: "Composto por Tórax, Abdome e Pelve." }
         ],
         slots: [
-          { title: "Longilíneo\n(alto e magro)", correctId: "bio_longi" },
-          { title: "Normilíneo\n(proporções médias)", correctId: "bio_normi" },
-          { title: "Brevilíneo\n(baixo e forte)", correctId: "bio_brevi" }
+          { label: "Cabeça", correct: "d1" },
+          { label: "Pescoço", correct: "d2" },
+          { label: "Tronco", correct: "d3" }
         ]
       },
       {
-        title: "Fase 3 — Variação humana: organize as ideias",
-        description: "Contextualize a variação em diferentes áreas",
-        timeLimit: 240,
+        title: "Fase 3: Divisão do Corpo (II)",
+        desc: "Subdivisões dos membros.",
         items: [
-          { id: "r1", text: "Pessoas variam em altura, proporções e características de forma contínua." },
-          { id: "r2", text: "Na EF, descreva medidas e capacidades (força, mobilidade), sem rotular pessoas." },
-          { id: "r3", text: "Respeito é essencial: diferenças sociais podem afetar saúde e acesso ao esporte." }
+          { id: "m1", text: "Ombro, Braço, Antebraço e Mão." },
+          { id: "m2", text: "Quadril, Coxa, Perna e Pé." }
         ],
         slots: [
-          { title: "Biologia humana\n(varia muito)", correctId: "r1" },
-          { title: "Na Educação Física\n(o que observar)", correctId: "r2" },
-          { title: "No social\n(respeito e desigualdades)", correctId: "r3" }
+          { label: "Membros Superiores", correct: "m1" },
+          { label: "Membros Inferiores", correct: "m2" }
         ]
       },
       {
-        title: "Fase Extra (Iniciante) — O que muda no corpo?",
-        description: "Categorize os fatores que modificam o corpo",
-        timeLimit: 270,
+        title: "Fase 4: Posição Anatômica",
+        desc: "Defina o padrão de referência universal.",
         items: [
-          { id: "sport_1", text: "Treinar sempre pode aumentar força e massa muscular." },
-          { id: "sport_2", text: "Esportes diferentes trabalham músculos diferentes." },
-          { id: "evol_1", text: "Evolução acontece ao longo de muitas gerações." },
-          { id: "evol_2", text: "É uma mudança na espécie com o passar do tempo." },
-          { id: "indiv_1", text: "Na puberdade e na velhice o corpo muda bastante." },
-          { id: "indiv_2", text: "Idade, sexo e biótipo influenciam proporções do corpo." },
-          { id: "amb_1", text: "Alimentação e sono podem mudar composição corporal." },
-          { id: "amb_2", text: "Postura e hábitos do dia a dia podem mudar o corpo." }
+          { id: "p1", text: "Corpo ereto, olhar para o horizonte, face para frente." },
+          { id: "p2", text: "Palmas voltadas para frente (supinação)." },
+          { id: "p3", text: "Pés unidos com pontas para frente." }
         ],
         slots: [
-          { title: "Treino / Esporte\n(muda com prática)", correctId: "sport_1" },
-          { title: "Treino / Esporte\n(muda com prática)", correctId: "sport_2" },
-          { title: "Evolução\n(muda em muito tempo)", correctId: "evol_1" },
-          { title: "Evolução\n(muda em muito tempo)", correctId: "evol_2" },
-          { title: "Fatores da pessoa\n(idade/sexo/biótipo)", correctId: "indiv_1" },
-          { title: "Fatores da pessoa\n(idade/sexo/biótipo)", correctId: "indiv_2" },
-          { title: "Ambiente / hábitos", correctId: "amb_1" },
-          { title: "Ambiente / hábitos", correctId: "amb_2" }
+          { label: "Cabeça e Olhar", correct: "p1" },
+          { label: "Mãos", correct: "p2" },
+          { label: "Pés", correct: "p3" }
+        ]
+      },
+      {
+        title: "Fase 5: Planos de Delimitação",
+        desc: "Como o corpo é dividido no espaço?",
+        items: [
+          { id: "s1", text: "Divide o corpo em metades Direita e Esquerda." },
+          { id: "s2", text: "Divide em partes Anterior e Posterior." },
+          { id: "s3", text: "Divide em partes Superior e Inferior." }
+        ],
+        slots: [
+          { label: "Plano Sagital", correct: "s1" },
+          { label: "Plano Frontal", correct: "s2" },
+          { label: "Plano Transversal", correct: "s3" }
+        ]
+      },
+      {
+        title: "Fase 6: Termos de Relação",
+        desc: "Localização relativa das estruturas.",
+        items: [
+          { id: "r1", text: "Mais próxima da cabeça (parte de cima)." },
+          { id: "r2", text: "Mais próxima da planta dos pés." },
+          { id: "r3", text: "Mais próxima da linha média do corpo." }
+        ],
+        slots: [
+          { label: "Superior (Cranial)", correct: "r1" },
+          { label: "Inferior (Podálico)", correct: "r2" },
+          { label: "Medial", correct: "r3" }
+        ]
+      },
+      {
+        title: "Fase 7: Termos de Comparação",
+        desc: "Distância em relação à raiz do membro.",
+        items: [
+          { id: "c1", text: "Mais próximo da raiz do membro ou tronco." },
+          { id: "c2", text: "Mais afastado da raiz do membro." },
+          { id: "c3", text: "Estrutura situada entre Lateral e Medial." }
+        ],
+        slots: [
+          { label: "Proximal", correct: "c1" },
+          { label: "Distal", correct: "c2" },
+          { label: "Intermédio", correct: "c3" }
         ]
       }
     ];
 
-    // ==================== GAME STATE ====================
-    let gameState = {
-      screen: 'start',
-      playerName: '',
-      currentLevel: 0,
+    let state = {
+      level: 0,
       score: 0,
-      timeLeft: TIME_PER_LEVEL,
-      timerInterval: null,
-      draggedItem: null,
-      slots: [],
-      items: [],
-      lockedSlots: new Set()
+      timeLeft: 240,
+      draggedId: null,
+      selections: {}
     };
 
-    let allScores = [];
-
-    // ==================== CONFIG STATE ====================
-    const defaultConfig = {
-      game_title: 'Corpo em Variação',
-      subtitle: 'Monta & Aprende (Drag & Drop)',
-      primary_color: '#7c3aed',
-      secondary_color: '#ec4899',
-      background_color: '#667eea',
-      text_color: '#1f2937',
-      accent_color: '#22c55e'
-    };
-
-    let config = { ...defaultConfig };
-
-    // ==================== SDK INITIALIZATION ====================
-    const dataHandler = {
-      onDataChanged(data) {
-        allScores = data.sort((a, b) => b.score - a.score);
-        updateLeaderboardPreview();
-        if (document.getElementById('ranking-modal').classList.contains('flex')) {
-          updateRankingList();
-        }
-      }
-    };
-
-    async function initSDKs() {
-      if (window.dataSdk) {
-        const result = await window.dataSdk.init(dataHandler);
-        if (!result.isOk) {
-          console.error('Data SDK init failed');
-        }
-      }
-
-      if (window.elementSdk) {
-        window.elementSdk.init({
-          defaultConfig,
-          onConfigChange: async (newConfig) => {
-            config = { ...defaultConfig, ...newConfig };
-            applyConfig();
-          },
-          mapToCapabilities: (cfg) => ({
-            recolorables: [
-              {
-                get: () => cfg.background_color || defaultConfig.background_color,
-                set: (v) => { cfg.background_color = v; window.elementSdk.setConfig({ background_color: v }); }
-              },
-              {
-                get: () => cfg.primary_color || defaultConfig.primary_color,
-                set: (v) => { cfg.primary_color = v; window.elementSdk.setConfig({ primary_color: v }); }
-              },
-              {
-                get: () => cfg.text_color || defaultConfig.text_color,
-                set: (v) => { cfg.text_color = v; window.elementSdk.setConfig({ text_color: v }); }
-              },
-              {
-                get: () => cfg.accent_color || defaultConfig.accent_color,
-                set: (v) => { cfg.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); }
-              },
-              {
-                get: () => cfg.secondary_color || defaultConfig.secondary_color,
-                set: (v) => { cfg.secondary_color = v; window.elementSdk.setConfig({ secondary_color: v }); }
-              }
-            ],
-            borderables: [],
-            fontEditable: undefined,
-            fontSizeable: undefined
-          }),
-          mapToEditPanelValues: (cfg) => new Map([
-            ['game_title', cfg.game_title || defaultConfig.game_title],
-            ['subtitle', cfg.subtitle || defaultConfig.subtitle]
-          ])
-        });
-      }
+    function init() {
+      document.getElementById('start-btn').onclick = () => {
+        showScreen('game');
+        loadLevel();
+        startTimer();
+      };
+      document.getElementById('check-btn').onclick = checkLevel;
     }
 
-    function applyConfig() {
-      const title = config.game_title || defaultConfig.game_title;
-      const subtitle = config.subtitle || defaultConfig.subtitle;
+    function loadLevel() {
+      const lvl = LEVELS[state.level];
+      state.selections = {};
+      document.getElementById('level-display').textContent = `${state.level + 1}/${LEVELS.length}`;
+      document.getElementById('level-title').textContent = lvl.title;
+      document.getElementById('level-desc').textContent = lvl.desc;
       
-      document.getElementById('main-title').textContent = title;
-      document.getElementById('main-subtitle').textContent = subtitle;
-      
-      document.body.style.background = `linear-gradient(135deg, ${config.background_color || defaultConfig.background_color} 0%, ${config.primary_color || defaultConfig.primary_color} 50%, ${config.secondary_color || defaultConfig.secondary_color} 100%)`;
-      
-      document.querySelectorAll('.title-font').forEach(el => {
-        if (el.classList.contains('bg-clip-text')) {
-          el.style.backgroundImage = `linear-gradient(to right, ${config.primary_color || defaultConfig.primary_color}, ${config.secondary_color || defaultConfig.secondary_color})`;
-        }
+      const itemsCont = document.getElementById('items-container');
+      itemsCont.innerHTML = '';
+      [...lvl.items].sort(() => Math.random() - 0.5).forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'draggable p-3 bg-gray-800 border border-gray-700 rounded-lg text-sm';
+        div.textContent = item.text;
+        div.draggable = true;
+        div.ondragstart = () => state.draggedId = item.id;
+        itemsCont.appendChild(div);
+      });
+
+      const slotsCont = document.getElementById('slots-container');
+      slotsCont.innerHTML = '';
+      lvl.slots.forEach((slot, i) => {
+        const div = document.createElement('div');
+        div.className = 'slot p-4 rounded-xl flex flex-col gap-2';
+        div.innerHTML = `<span class="text-xs font-bold text-green-500 uppercase">${slot.label}</span>
+                         <div class="drop-zone h-10 flex items-center text-sm italic text-gray-500">Arraste aqui...</div>`;
+        
+        div.ondragover = (e) => { e.preventDefault(); div.classList.add('highlight'); };
+        div.ondragleave = () => div.classList.remove('highlight');
+        div.ondrop = () => {
+          div.classList.remove('highlight');
+          const item = lvl.items.find(it => it.id === state.draggedId);
+          state.selections[i] = item.id;
+          div.querySelector('.drop-zone').textContent = item.text;
+          div.querySelector('.drop-zone').classList.remove('italic', 'text-gray-500');
+          div.querySelector('.drop-zone').classList.add('text-white');
+          audio.play(600, 'sine', 0.05);
+        };
+        slotsCont.appendChild(div);
       });
     }
 
-    // ==================== LEADERBOARD ====================
-    function updateLeaderboardPreview() {
-      const container = document.getElementById('leaderboard-preview');
-      if (allScores.length === 0) {
-        container.innerHTML = '<p class="text-gray-400 italic">Nenhuma pontuação ainda</p>';
-        return;
-      }
+    function checkLevel() {
+      const lvl = LEVELS[state.level];
+      let correctCount = 0;
+      const slots = document.querySelectorAll('.slot');
       
-      const top3 = allScores.slice(0, 3);
-      const medals = ['🥇', '🥈', '🥉'];
-      
-      container.innerHTML = top3.map((s, i) => `
-        <div class="flex items-center justify-between py-1">
-          <span>${medals[i]} ${s.player_name}</span>
-          <span class="font-bold">${s.score}</span>
-        </div>
-      `).join('');
-    }
-
-    function updateRankingList() {
-      const container = document.getElementById('ranking-list');
-      if (allScores.length === 0) {
-        container.innerHTML = '<p class="text-gray-400 text-center py-4">Nenhuma pontuação registrada</p>';
-        return;
-      }
-      
-      const medals = ['🥇', '🥈', '🥉'];
-      
-      container.innerHTML = allScores.slice(0, 10).map((s, i) => `
-        <div class="flex items-center justify-between p-3 rounded-xl ${i < 3 ? 'bg-gradient-to-r from-amber-50 to-yellow-50' : 'bg-gray-50'}">
-          <div class="flex items-center gap-3">
-            <span class="text-xl">${i < 3 ? medals[i] : `#${i + 1}`}</span>
-            <span class="font-medium">${s.player_name}</span>
-          </div>
-          <div class="text-right">
-            <span class="font-bold text-purple-600">${s.score}</span>
-            <span class="text-xs text-gray-500 ml-2">Nv.${s.level_reached}</span>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // ==================== SCREEN MANAGEMENT ====================
-    function showScreen(screenName) {
-      gameState.screen = screenName;
-      document.getElementById('start-screen').classList.add('hidden');
-      document.getElementById('game-screen').classList.add('hidden');
-      document.getElementById('end-screen').classList.add('hidden');
-      document.getElementById(`${screenName}-screen`).classList.remove('hidden');
-    }
-
-    // ==================== TIMER ====================
-    function startTimer() {
-      gameState.timeLeft = TIME_PER_LEVEL;
-      updateTimerDisplay();
-      
-      if (gameState.timerInterval) clearInterval(gameState.timerInterval);
-      
-      gameState.timerInterval = setInterval(() => {
-        gameState.timeLeft--;
-        updateTimerDisplay();
-        
-        if (gameState.timeLeft <= 0) {
-          clearInterval(gameState.timerInterval);
-          endGame('time');
+      lvl.slots.forEach((slot, i) => {
+        if (state.selections[i] === slot.correct) {
+          slots[i].classList.add('correct');
+          correctCount++;
+        } else {
+          slots[i].classList.add('incorrect');
+          audio.play(150, 'sawtooth', 0.2, 0.2);
+          setTimeout(() => slots[i].classList.remove('incorrect'), 500);
         }
+      });
+
+      if (correctCount === lvl.slots.length) {
+        state.score += 100 + (state.level * 50);
+        document.getElementById('score-display').textContent = state.score;
+        confetti(slots[0]);
+        audio.play(800, 'triangle', 0.3);
+        setTimeout(() => {
+          state.level++;
+          if (state.level < LEVELS.length) loadLevel();
+          else endGame();
+        }, 1200);
+      }
+    }
+
+    function confetti(target) {
+      const rect = target.getBoundingClientRect();
+      for (let i = 0; i < 10; i++) {
+        const c = document.createElement('div');
+        c.className = 'coin text-xl';
+        c.innerHTML = '✨';
+        c.style.left = rect.left + 'px';
+        c.style.top = rect.top + 'px';
+        c.style.setProperty('--tx', (Math.random() * 200 - 100) + 'px');
+        c.style.setProperty('--ty', (Math.random() * 200 - 100) + 'px');
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 800);
+      }
+    }
+
+    function startTimer() {
+      const timer = setInterval(() => {
+        state.timeLeft--;
+        const mins = Math.floor(state.timeLeft / 60);
+        const secs = state.timeLeft % 60;
+        document.getElementById('timer-display').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        document.getElementById('timer-bar').style.width = (state.timeLeft / 240 * 100) + '%';
+        if (state.timeLeft <= 0) { clearInterval(timer); endGame(); }
       }, 1000);
     }
 
-    function updateTimerDisplay() {
-      const mins = Math.floor(gameState.timeLeft / 60);
-      const secs = gameState.timeLeft % 60;
-      const display = document.getElementById('timer-display');
-      const bar = document.getElementById('timer-bar');
-      
-      display.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-      bar.style.width = `${(gameState.timeLeft / TIME_PER_LEVEL) * 100}%`;
-      
-      if (gameState.timeLeft <= 30) {
-        display.classList.add('text-red-600');
-        bar.classList.add('!bg-red-500');
-      } else {
-        display.classList.remove('text-red-600');
-        bar.classList.remove('!bg-red-500');
-      }
+    function showScreen(id) {
+      document.querySelectorAll('#app > div').forEach(d => d.classList.add('hidden'));
+      document.getElementById(`${id}-screen`).classList.remove('hidden');
     }
 
-    // ==================== GAME LOGIC ====================
-    function startGame() {
-      const nameInput = document.getElementById('player-name');
-      gameState.playerName = nameInput.value.trim() || 'Jogador';
-      gameState.currentLevel = 0;
-      gameState.score = 0;
-      gameState.lockedSlots = new Set();
-      
-      showScreen('game');
-      loadLevel(0);
-      startTimer();
-      updateScoreDisplay();
-    }
-
-    function loadLevel(levelIndex) {
-      if (levelIndex >= LEVELS.length) {
-        endGame('complete');
-        return;
-      }
-      
-      gameState.currentLevel = levelIndex;
-      gameState.lockedSlots = new Set();
-      const level = LEVELS[levelIndex];
-      
-      document.getElementById('level-display').textContent = `${levelIndex + 1} / ${LEVELS.length}`;
-      document.getElementById('level-title').textContent = level.title;
-      document.getElementById('feedback-text').textContent = level.description;
-      
-      // Shuffle items
-      gameState.items = [...level.items].sort(() => Math.random() - 0.5);
-      gameState.slots = level.slots.map(s => ({ ...s, filledBy: null }));
-      
-      renderItems();
-      renderSlots();
-    }
-
-    function renderItems() {
-      const container = document.getElementById('items-container');
-      container.innerHTML = '';
-      
-      gameState.items.forEach(item => {
-        const isPlaced = gameState.slots.some(s => s.filledBy === item.id);
-        if (isPlaced) return;
-        
-        const div = document.createElement('div');
-        div.className = 'draggable p-3 rounded-xl bg-gradient-to-r from-purple-100 to-pink-100 border-2 border-purple-200 text-sm font-medium text-gray-700 card-shadow';
-        div.dataset.itemId = item.id;
-        div.textContent = item.text;
-        div.draggable = true;
-        
-        div.addEventListener('dragstart', handleDragStart);
-        div.addEventListener('dragend', handleDragEnd);
-        
-        // Touch support
-        div.addEventListener('touchstart', handleTouchStart, { passive: false });
-        div.addEventListener('touchmove', handleTouchMove, { passive: false });
-        div.addEventListener('touchend', handleTouchEnd);
-        
-        container.appendChild(div);
-      });
-    }
-
-    function renderSlots() {
-      const container = document.getElementById('slots-container');
-      container.innerHTML = '';
-      
-      gameState.slots.forEach((slot, index) => {
-        const div = document.createElement('div');
-        const isLocked = gameState.lockedSlots.has(index);
-        
-        div.className = `slot p-4 rounded-xl min-h-[100px] ${isLocked ? 'locked' : ''}`;
-        div.dataset.slotIndex = index;
-        
-        let content = `<p class="font-medium text-gray-700 mb-2">${slot.title}</p>`;
-        
-        if (slot.filledBy) {
-          const item = gameState.items.find(i => i.id === slot.filledBy);
-          content += `
-            <div class="mt-2 p-2 rounded-lg bg-white/80 text-sm ${isLocked ? 'border-2 border-green-400' : ''}">
-              ${item ? item.text : ''}
-              ${!isLocked ? '<button class="remove-btn ml-2 text-red-500 hover:text-red-700">✕</button>' : '<span class="ml-2 text-green-600">✓</span>'}
-            </div>
-          `;
-        } else {
-          content += '<p class="text-gray-400 text-sm italic">Solte um item aqui...</p>';
-        }
-        
-        div.innerHTML = content;
-        
-        div.addEventListener('dragover', handleDragOver);
-        div.addEventListener('dragleave', handleDragLeave);
-        div.addEventListener('drop', handleDrop);
-        
-        const removeBtn = div.querySelector('.remove-btn');
-        if (removeBtn) {
-          removeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            removeFromSlot(index);
-          });
-        }
-        
-        container.appendChild(div);
-      });
-    }
-
-    // ==================== DRAG & DROP ====================
-    function handleDragStart(e) {
-      gameState.draggedItem = e.target.dataset.itemId;
-      e.target.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-    }
-
-    function handleDragEnd(e) {
-      e.target.classList.remove('dragging');
-      gameState.draggedItem = null;
-      document.querySelectorAll('.slot').forEach(s => s.classList.remove('highlight'));
-    }
-
-    function handleDragOver(e) {
-      e.preventDefault();
-      const slot = e.currentTarget;
-      const slotIndex = parseInt(slot.dataset.slotIndex);
-      
-      if (!gameState.lockedSlots.has(slotIndex) && !gameState.slots[slotIndex].filledBy) {
-        slot.classList.add('highlight');
-      }
-    }
-
-    function handleDragLeave(e) {
-      e.currentTarget.classList.remove('highlight');
-    }
-
-    function handleDrop(e) {
-      e.preventDefault();
-      const slot = e.currentTarget;
-      slot.classList.remove('highlight');
-      
-      const slotIndex = parseInt(slot.dataset.slotIndex);
-      
-      if (gameState.draggedItem && !gameState.lockedSlots.has(slotIndex)) {
-        // Remove from any other slot
-        gameState.slots.forEach((s, i) => {
-          if (s.filledBy === gameState.draggedItem && i !== slotIndex) {
-            s.filledBy = null;
-          }
-        });
-        
-        gameState.slots[slotIndex].filledBy = gameState.draggedItem;
-        renderItems();
-        renderSlots();
-      }
-    }
-
-    // ==================== TOUCH SUPPORT ====================
-    let touchClone = null;
-    let touchStartPos = { x: 0, y: 0 };
-
-    function handleTouchStart(e) {
-      e.preventDefault();
-      const touch = e.touches[0];
-      const target = e.currentTarget;
-      
-      gameState.draggedItem = target.dataset.itemId;
-      target.classList.add('dragging');
-      
-      touchClone = target.cloneNode(true);
-      touchClone.style.position = 'fixed';
-      touchClone.style.zIndex = '9999';
-      touchClone.style.pointerEvents = 'none';
-      touchClone.style.width = target.offsetWidth + 'px';
-      touchClone.style.left = touch.clientX - target.offsetWidth / 2 + 'px';
-      touchClone.style.top = touch.clientY - 30 + 'px';
-      touchClone.style.opacity = '0.9';
-      document.body.appendChild(touchClone);
-      
-      touchStartPos = { x: touch.clientX, y: touch.clientY };
-    }
-
-    function handleTouchMove(e) {
-      e.preventDefault();
-      const touch = e.touches[0];
-      
-      if (touchClone) {
-        touchClone.style.left = touch.clientX - touchClone.offsetWidth / 2 + 'px';
-        touchClone.style.top = touch.clientY - 30 + 'px';
-      }
-      
-      // Highlight slot under finger
-      document.querySelectorAll('.slot').forEach(slot => {
-        const rect = slot.getBoundingClientRect();
-        const slotIndex = parseInt(slot.dataset.slotIndex);
-        
-        if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
-            touch.clientY >= rect.top && touch.clientY <= rect.bottom &&
-            !gameState.lockedSlots.has(slotIndex) && !gameState.slots[slotIndex].filledBy) {
-          slot.classList.add('highlight');
-        } else {
-          slot.classList.remove('highlight');
-        }
-      });
-    }
-
-    function handleTouchEnd(e) {
-      const touch = e.changedTouches[0];
-      
-      if (touchClone) {
-        document.body.removeChild(touchClone);
-        touchClone = null;
-      }
-      
-      document.querySelectorAll('.draggable.dragging').forEach(el => el.classList.remove('dragging'));
-      
-      // Find slot at touch position
-      document.querySelectorAll('.slot').forEach(slot => {
-        slot.classList.remove('highlight');
-        const rect = slot.getBoundingClientRect();
-        const slotIndex = parseInt(slot.dataset.slotIndex);
-        
-        if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
-            touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
-          
-          if (gameState.draggedItem && !gameState.lockedSlots.has(slotIndex)) {
-            gameState.slots.forEach((s, i) => {
-              if (s.filledBy === gameState.draggedItem && i !== slotIndex) {
-                s.filledBy = null;
-              }
-            });
-            
-            gameState.slots[slotIndex].filledBy = gameState.draggedItem;
-            renderItems();
-            renderSlots();
-          }
-        }
-      });
-      
-      gameState.draggedItem = null;
-    }
-
-    function removeFromSlot(slotIndex) {
-      if (!gameState.lockedSlots.has(slotIndex)) {
-        gameState.slots[slotIndex].filledBy = null;
-        renderItems();
-        renderSlots();
-      }
-    }
-
-    // ==================== COIN EXPLOSION ====================
-    function createCoinExplosion(count, slotElement) {
-      const rect = slotElement.getBoundingClientRect();
-      const startX = rect.left + rect.width / 2;
-      const startY = rect.top + rect.height / 2;
-      
-      // Play coin sound
-      playSound('coin');
-      
-      for (let i = 0; i < count; i++) {
-        const coin = document.createElement('div');
-        coin.className = 'coin';
-        
-        const angle = (i / count) * Math.PI * 2;
-        const distance = 100 + Math.random() * 80;
-        const tx = Math.cos(angle) * distance;
-        const ty = Math.sin(angle) * distance;
-        
-        coin.style.left = startX + 'px';
-        coin.style.top = startY + 'px';
-        coin.style.setProperty('--tx', tx + 'px');
-        coin.style.setProperty('--ty', ty + 'px');
-        
-        document.body.appendChild(coin);
-        
-        setTimeout(() => coin.remove(), 1000);
-      }
-    }
-
-    // ==================== AUDIO SYSTEM ====================
-    function playSound(type) {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      
-      if (type === 'correct') {
-        // Ting sound (800 -> 1200 Hz)
-        const oscillator1 = audioContext.createOscillator();
-        const oscillator2 = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator1.connect(gainNode);
-        oscillator2.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator1.frequency.setValueAtTime(800, audioContext.currentTime);
-        oscillator1.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
-        oscillator1.start(audioContext.currentTime);
-        oscillator1.stop(audioContext.currentTime + 0.1);
-        
-        oscillator2.frequency.setValueAtTime(1000, audioContext.currentTime + 0.05);
-        oscillator2.frequency.exponentialRampToValueAtTime(1400, audioContext.currentTime + 0.15);
-        oscillator2.start(audioContext.currentTime + 0.05);
-        oscillator2.stop(audioContext.currentTime + 0.15);
-        
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
-      } else if (type === 'error') {
-        // Buzz sound
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(150, audioContext.currentTime);
-        oscillator.frequency.setValueAtTime(200, audioContext.currentTime + 0.1);
-        oscillator.frequency.setValueAtTime(150, audioContext.currentTime + 0.2);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.3);
-        
-        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-      } else if (type === 'complete') {
-        // Epic fanfare (C5, E5, G5, C6)
-        const notes = [523.25, 659.25, 783.99, 1046.5];
-        const durations = [0.3, 0.3, 0.3, 0.5];
-        
-        notes.forEach((freq, i) => {
-          const oscillator = audioContext.createOscillator();
-          const gainNode = audioContext.createGain();
-          
-          oscillator.connect(gainNode);
-          gainNode.connect(audioContext.destination);
-          
-          const startTime = audioContext.currentTime + durations.slice(0, i).reduce((a, b) => a + b, 0);
-          
-          oscillator.frequency.setValueAtTime(freq, startTime);
-          oscillator.start(startTime);
-          oscillator.stop(startTime + durations[i]);
-          
-          gainNode.gain.setValueAtTime(0.15, startTime);
-          gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + durations[i]);
-        });
-      } else if (type === 'coin') {
-        // Coin ding
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.2);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.2);
-        
-        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-      }
-    }
-
-    // ==================== VERIFICATION ====================
-    function checkAnswers() {
-      let correctCount = 0;
-      let wrongCount = 0;
-      let newLocks = 0;
-      
-      gameState.slots.forEach((slot, index) => {
-        if (gameState.lockedSlots.has(index)) {
-          correctCount++;
-          return;
-        }
-        
-        const slotEl = document.querySelector(`[data-slot-index="${index}"]`);
-        
-        if (slot.filledBy === slot.correctId) {
-          correctCount++;
-          newLocks++;
-          gameState.lockedSlots.add(index);
-          gameState.score += POINTS_PER_CORRECT + POINTS_LOCK_BONUS;
-          slotEl.classList.add('correct');
-          slotEl.classList.remove('incorrect');
-          
-          // Create coin explosion
-          createCoinExplosion(3, slotEl);
-          playSound('correct');
-        } else if (slot.filledBy) {
-          wrongCount++;
-          slotEl.classList.add('incorrect');
-          slotEl.classList.remove('correct');
-          playSound('error');
-          setTimeout(() => slotEl.classList.remove('incorrect'), 400);
-        }
-      });
-      
-      if (wrongCount > 0) {
-        gameState.timeLeft = Math.max(0, gameState.timeLeft - (PENALTY_WRONG_CHECK * wrongCount));
-        updateTimerDisplay();
-      }
-      
-      updateScoreDisplay();
-      
-      const feedback = document.getElementById('feedback-text');
-      
-      if (correctCount === gameState.slots.length) {
-        gameState.score += BONUS_PER_LEVEL_CLEAR + (5 * 50);
-        updateScoreDisplay();
-        createCoinExplosion(5, document.querySelector('[data-slot-index="0"]'));
-        playSound('complete');
-        feedback.innerHTML = `<span style="color: #00ff00; font-weight: bold;">🎉 Nível completo! +${BONUS_PER_LEVEL_CLEAR + (5 * 50)} bônus!</span>`;
-        
-        setTimeout(() => {
-          loadLevel(gameState.currentLevel + 1);
-        }, 1500);
-      } else if (newLocks > 0) {
-        feedback.innerHTML = `<span style="color: #00ff00;">✅ ${newLocks} correto(s)! ${wrongCount > 0 ? `<span style="color: #ff0000;">❌ ${wrongCount} errado(s) (-${PENALTY_WRONG_CHECK * wrongCount}s)</span>` : ''}</span>`;
-      } else if (wrongCount > 0) {
-        feedback.innerHTML = `<span style="color: #ff0000;">❌ ${wrongCount} errado(s)! Tente novamente. (-${PENALTY_WRONG_CHECK * wrongCount}s)</span>`;
-      } else {
-        feedback.textContent = 'Preencha os espaços vazios e verifique novamente.';
-      }
-      
-      renderSlots();
-    }
-
-    function updateScoreDisplay() {
-      document.getElementById('score-display').textContent = gameState.score;
-    }
-
-    // ==================== END GAME ====================
-    async function endGame(reason) {
-      if (gameState.timerInterval) {
-        clearInterval(gameState.timerInterval);
-      }
-      
+    function endGame() {
       showScreen('end');
-      
-      document.getElementById('final-score').textContent = gameState.score;
-      document.getElementById('final-level').textContent = `Nível alcançado: ${gameState.currentLevel + 1} de ${LEVELS.length}`;
-      
-      let message = '';
-      if (reason === 'complete') {
-        message = '🏆 Parabéns! Você completou todos os níveis!';
-      } else if (reason === 'time') {
-        message = '⏱️ Tempo esgotado! Boa tentativa!';
-      }
-      document.getElementById('final-message').textContent = message;
-      
-      // Save score
-      if (window.dataSdk && allScores.length < 999) {
-        const result = await window.dataSdk.create({
-          player_name: gameState.playerName,
-          score: gameState.score,
-          level_reached: gameState.currentLevel + 1,
-          created_at: new Date().toISOString()
-        });
-        
-        if (!result.isOk) {
-          console.error('Failed to save score');
-        }
-      }
+      document.getElementById('final-score').textContent = state.score;
     }
 
-    // ==================== EVENT LISTENERS ====================
-    document.getElementById('start-btn').addEventListener('click', startGame);
-    document.getElementById('check-btn').addEventListener('click', checkAnswers);
-    document.getElementById('play-again-btn').addEventListener('click', () => {
-      showScreen('start');
-    });
-    document.getElementById('view-ranking-btn').addEventListener('click', () => {
-      updateRankingList();
-      document.getElementById('ranking-modal').classList.remove('hidden');
-      document.getElementById('ranking-modal').classList.add('flex');
-    });
-    document.getElementById('close-ranking-btn').addEventListener('click', () => {
-      document.getElementById('ranking-modal').classList.add('hidden');
-      document.getElementById('ranking-modal').classList.remove('flex');
-    });
-    document.getElementById('ranking-modal').addEventListener('click', (e) => {
-      if (e.target.id === 'ranking-modal') {
-        document.getElementById('ranking-modal').classList.add('hidden');
-        document.getElementById('ranking-modal').classList.remove('flex');
-      }
-    });
-
-    // Enter key to start
-    document.getElementById('player-name').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') startGame();
-    });
-
-    // ==================== INIT ====================
-    initSDKs();
-    applyConfig();
+    init();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d1921d801dba501',t:'MTc3MTcwNzE5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ </body>
 </html>
