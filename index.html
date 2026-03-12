@@ -2,12 +2,15 @@
 <html lang="pt-BR" class="h-full">
  <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Anatomia Humana — Master Class</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { font-family: 'Quicksand', sans-serif; }
+    * { 
+      font-family: 'Quicksand', sans-serif; 
+      -webkit-tap-highlight-color: transparent;
+    }
     .title-font { font-family: 'Fredoka', sans-serif; }
     
     .game-bg {
@@ -30,11 +33,14 @@
     .draggable {
       cursor: grab;
       user-select: none;
-      touch-action: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: element;
+      touch-action: none; /* Impede gestos do navegador como scroll enquanto arrasta */
       transition: all 0.2s ease;
     }
     .draggable:hover { transform: translateY(-2px); border-color: #00ff00; }
-    .draggable.dragging { opacity: 0.5; cursor: grabbing; }
+    .draggable:active { cursor: grabbing; }
+    .draggable.dragging { opacity: 0.5; }
     
     .slot {
       transition: all 0.3s ease;
@@ -115,20 +121,21 @@
   </div>
 
   <script>
-    // Efeitos sonoros
     const audio = {
       play(freq, type = 'sine', duration = 0.1, volume = 0.1) {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        gain.gain.setValueAtTime(volume, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + duration);
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, ctx.currentTime);
+          gain.gain.setValueAtTime(volume, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + duration);
+        } catch(e) { console.log("Áudio não suportado"); }
       }
     };
 
@@ -137,9 +144,9 @@
         title: "Fase 1: Conceitos Iniciais",
         desc: "Diferencie os tipos de variações morfológicas.",
         items: [
-          { id: "v1", text: "Diferença que não atrapalha a função." },
-          { id: "v2", text: "Alteração que traz prejuízo funcional." },
-          { id: "v3", text: "Anomalia grave incompatível com a vida." }
+          { id: "v1", text: "Diferença que não atrapalha a função do órgão." },
+          { id: "v2", text: "Alteração que traz prejuízo funcional ao corpo." },
+          { id: "v3", text: "Anomalia grave, incompatível com a vida." }
         ],
         slots: [
           { label: "Variação Anatômica", correct: "v1" },
@@ -149,7 +156,7 @@
       },
       {
         title: "Fase 2: Divisão do Corpo (I)",
-        desc: "Identifique as partes principais e pescoço.",
+        desc: "Identifique as partes principais e a região do pescoço.",
         items: [
           { id: "d1", text: "Dividida em Crânio e Face." },
           { id: "d2", text: "Conexão entre a cabeça e o tronco." },
@@ -163,7 +170,7 @@
       },
       {
         title: "Fase 3: Divisão do Corpo (II)",
-        desc: "Subdivisões dos membros.",
+        desc: "Subdivisões dos membros superiores e inferiores.",
         items: [
           { id: "m1", text: "Ombro, Braço, Antebraço e Mão." },
           { id: "m2", text: "Quadril, Coxa, Perna e Pé." }
@@ -175,11 +182,11 @@
       },
       {
         title: "Fase 4: Posição Anatômica",
-        desc: "Defina o padrão de referência universal.",
+        desc: "Defina o padrão de referência para descrições.",
         items: [
           { id: "p1", text: "Corpo ereto, olhar para o horizonte, face para frente." },
-          { id: "p2", text: "Palmas voltadas para frente (supinação)." },
-          { id: "p3", text: "Pés unidos com pontas para frente." }
+          { id: "p2", text: "Palmas das mãos voltadas para frente (supinação)." },
+          { id: "p3", text: "Pés unidos com pontas voltadas para frente." }
         ],
         slots: [
           { label: "Cabeça e Olhar", correct: "p1" },
@@ -189,7 +196,7 @@
       },
       {
         title: "Fase 5: Planos de Delimitação",
-        desc: "Como o corpo é dividido no espaço?",
+        desc: "Como o corpo é dividido espacialmente?",
         items: [
           { id: "s1", text: "Divide o corpo em metades Direita e Esquerda." },
           { id: "s2", text: "Divide em partes Anterior e Posterior." },
@@ -197,17 +204,17 @@
         ],
         slots: [
           { label: "Plano Sagital", correct: "s1" },
-          { label: "Plano Frontal", correct: "s2" },
-          { label: "Plano Transversal", correct: "s3" }
+          { label: "Plano Frontal (Coronal)", correct: "s2" },
+          { label: "Plano Transversal (Horizontal)", correct: "s3" }
         ]
       },
       {
         title: "Fase 6: Termos de Relação",
         desc: "Localização relativa das estruturas.",
         items: [
-          { id: "r1", text: "Mais próxima da cabeça (parte de cima)." },
-          { id: "r2", text: "Mais próxima da planta dos pés." },
-          { id: "r3", text: "Mais próxima da linha média do corpo." }
+          { id: "r1", text: "Estrutura mais próxima da cabeça (parte de cima)." },
+          { id: "r2", text: "Estrutura mais próxima da planta dos pés." },
+          { id: "r3", text: "Estrutura mais próxima da linha média do corpo." }
         ],
         slots: [
           { label: "Superior (Cranial)", correct: "r1" },
@@ -219,9 +226,9 @@
         title: "Fase 7: Termos de Comparação",
         desc: "Distância em relação à raiz do membro.",
         items: [
-          { id: "c1", text: "Mais próximo da raiz do membro ou tronco." },
-          { id: "c2", text: "Mais afastado da raiz do membro." },
-          { id: "c3", text: "Estrutura situada entre Lateral e Medial." }
+          { id: "c1", text: "Mais próximo da raiz do membro ou do tronco." },
+          { id: "c2", text: "Mais afastado da raiz do membro (extremidades)." },
+          { id: "c3", text: "Entre uma estrutura medial e uma lateral." }
         ],
         slots: [
           { label: "Proximal", correct: "c1" },
@@ -251,7 +258,7 @@
     function loadLevel() {
       const lvl = LEVELS[state.level];
       state.selections = {};
-      document.getElementById('level-display').textContent = `${state.level + 1}/${LEVELS.length}`;
+      document.getElementById('level-display').textContent = `${state.level + 1}/7`;
       document.getElementById('level-title').textContent = lvl.title;
       document.getElementById('level-desc').textContent = lvl.desc;
       
@@ -259,10 +266,20 @@
       itemsCont.innerHTML = '';
       [...lvl.items].sort(() => Math.random() - 0.5).forEach(item => {
         const div = document.createElement('div');
-        div.className = 'draggable p-3 bg-gray-800 border border-gray-700 rounded-lg text-sm';
+        div.className = 'draggable p-3 bg-gray-800 border border-gray-700 rounded-lg text-sm select-none';
         div.textContent = item.text;
         div.draggable = true;
-        div.ondragstart = () => state.draggedId = item.id;
+        
+        // Proteção contra menu de download/contexto
+        div.oncontextmenu = (e) => e.preventDefault();
+        
+        div.ondragstart = (e) => {
+          state.draggedId = item.id;
+          div.classList.add('dragging');
+          e.dataTransfer.setData('text/plain', item.id);
+        };
+        div.ondragend = () => div.classList.remove('dragging');
+        
         itemsCont.appendChild(div);
       });
 
@@ -276,14 +293,17 @@
         
         div.ondragover = (e) => { e.preventDefault(); div.classList.add('highlight'); };
         div.ondragleave = () => div.classList.remove('highlight');
-        div.ondrop = () => {
+        div.ondrop = (e) => {
+          e.preventDefault();
           div.classList.remove('highlight');
           const item = lvl.items.find(it => it.id === state.draggedId);
-          state.selections[i] = item.id;
-          div.querySelector('.drop-zone').textContent = item.text;
-          div.querySelector('.drop-zone').classList.remove('italic', 'text-gray-500');
-          div.querySelector('.drop-zone').classList.add('text-white');
-          audio.play(600, 'sine', 0.05);
+          if (item) {
+            state.selections[i] = item.id;
+            div.querySelector('.drop-zone').textContent = item.text;
+            div.querySelector('.drop-zone').classList.remove('italic', 'text-gray-500');
+            div.querySelector('.drop-zone').classList.add('text-white');
+            audio.play(600, 'sine', 0.05);
+          }
         };
         slotsCont.appendChild(div);
       });
@@ -320,10 +340,10 @@
 
     function confetti(target) {
       const rect = target.getBoundingClientRect();
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 12; i++) {
         const c = document.createElement('div');
         c.className = 'coin text-xl';
-        c.innerHTML = '✨';
+        c.innerHTML = '🟢';
         c.style.left = rect.left + 'px';
         c.style.top = rect.top + 'px';
         c.style.setProperty('--tx', (Math.random() * 200 - 100) + 'px');
