@@ -34,13 +34,12 @@
       cursor: grab;
       user-select: none;
       -webkit-user-select: none;
-      -webkit-user-drag: element;
-      touch-action: none; /* Impede gestos do navegador como scroll enquanto arrasta */
+      touch-action: none;
       transition: all 0.2s ease;
     }
     .draggable:hover { transform: translateY(-2px); border-color: #00ff00; }
     .draggable:active { cursor: grabbing; }
-    .draggable.dragging { opacity: 0.5; }
+    .draggable.dragging { opacity: 0.5; transform: scale(1.05); z-index: 100; }
     
     .slot {
       transition: all 0.3s ease;
@@ -99,7 +98,7 @@
 
     <div class="flex-1 flex overflow-hidden p-4 gap-4">
      <div class="w-1/3 glass-panel rounded-2xl p-4 overflow-y-auto">
-      <h3 class="text-sm font-bold text-gray-400 mb-4 uppercase">Arraste as Respostas:</h3>
+      <h3 class="text-sm font-bold text-gray-400 mb-4 uppercase">Respostas:</h3>
       <div id="items-container" class="space-y-3"></div>
      </div>
      <div class="w-2/3 glass-panel rounded-2xl p-4 overflow-y-auto">
@@ -270,15 +269,26 @@
         div.textContent = item.text;
         div.draggable = true;
         
-        // Proteção contra menu de download/contexto
-        div.oncontextmenu = (e) => e.preventDefault();
-        
+        // Handlers Mouse
         div.ondragstart = (e) => {
           state.draggedId = item.id;
           div.classList.add('dragging');
-          e.dataTransfer.setData('text/plain', item.id);
         };
         div.ondragend = () => div.classList.remove('dragging');
+
+        // Handlers Touch (Correção para dedos)
+        div.ontouchstart = (e) => {
+          state.draggedId = item.id;
+          div.classList.add('dragging');
+        };
+        div.ontouchend = (e) => {
+          div.classList.remove('dragging');
+          const touch = e.changedTouches[0];
+          const target = document.elementFromPoint(touch.clientX, touch.clientY);
+          const slot = target?.closest('.slot');
+          if (slot) handleDrop(slot.dataset.index, item, slot);
+        };
+        div.ontouchmove = (e) => { e.preventDefault(); }, { passive: false };
         
         itemsCont.appendChild(div);
       });
@@ -288,8 +298,9 @@
       lvl.slots.forEach((slot, i) => {
         const div = document.createElement('div');
         div.className = 'slot p-4 rounded-xl flex flex-col gap-2';
-        div.innerHTML = `<span class="text-xs font-bold text-green-500 uppercase">${slot.label}</span>
-                         <div class="drop-zone h-10 flex items-center text-sm italic text-gray-500">Arraste aqui...</div>`;
+        div.dataset.index = i;
+        div.innerHTML = `<span class="text-xs font-bold text-green-500 uppercase pointer-events-none">${slot.label}</span>
+                         <div class="drop-zone h-10 flex items-center text-sm italic text-gray-500 pointer-events-none">Arraste aqui...</div>`;
         
         div.ondragover = (e) => { e.preventDefault(); div.classList.add('highlight'); };
         div.ondragleave = () => div.classList.remove('highlight');
@@ -297,16 +308,21 @@
           e.preventDefault();
           div.classList.remove('highlight');
           const item = lvl.items.find(it => it.id === state.draggedId);
-          if (item) {
-            state.selections[i] = item.id;
-            div.querySelector('.drop-zone').textContent = item.text;
-            div.querySelector('.drop-zone').classList.remove('italic', 'text-gray-500');
-            div.querySelector('.drop-zone').classList.add('text-white');
-            audio.play(600, 'sine', 0.05);
-          }
+          handleDrop(i, item, div);
         };
         slotsCont.appendChild(div);
       });
+    }
+
+    function handleDrop(index, item, slotEl) {
+      if (item) {
+        state.selections[index] = item.id;
+        const dz = slotEl.querySelector('.drop-zone');
+        dz.textContent = item.text;
+        dz.classList.remove('italic', 'text-gray-500');
+        dz.classList.add('text-white');
+        audio.play(600, 'sine', 0.05);
+      }
     }
 
     function checkLevel() {
@@ -316,9 +332,11 @@
       
       lvl.slots.forEach((slot, i) => {
         if (state.selections[i] === slot.correct) {
+          slots[i].classList.remove('incorrect');
           slots[i].classList.add('correct');
           correctCount++;
         } else {
+          slots[i].classList.remove('correct');
           slots[i].classList.add('incorrect');
           audio.play(150, 'sawtooth', 0.2, 0.2);
           setTimeout(() => slots[i].classList.remove('incorrect'), 500);
@@ -355,12 +373,16 @@
 
     function startTimer() {
       const timer = setInterval(() => {
+        if (state.timeLeft <= 0 || state.level >= LEVELS.length) {
+          clearInterval(timer);
+          return;
+        }
         state.timeLeft--;
         const mins = Math.floor(state.timeLeft / 60);
         const secs = state.timeLeft % 60;
         document.getElementById('timer-display').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         document.getElementById('timer-bar').style.width = (state.timeLeft / 240 * 100) + '%';
-        if (state.timeLeft <= 0) { clearInterval(timer); endGame(); }
+        if (state.timeLeft <= 0) endGame();
       }, 1000);
     }
 
